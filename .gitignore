@@ -1,0 +1,21 @@
+# Dependency directories
+node_modules/
+
+# Cypress folders
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/
+
+# Environment variables
+.env
+cypress.env.json
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
