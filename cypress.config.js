@@ -11,11 +11,11 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    env: {
-      // apiUrl: 'http://localhost:8080/api', // URL của Backend Java
-      username_admin: 'admin',
-      password_admin: 'Admin@123'
-    },
+    // env: {
+    // apiUrl: 'http://localhost:8080/api', // URL của Backend Java
+    //   username_admin: 'admin',
+    //   password_admin: 'Admin@123'
+    // },
     specPattern: [
       "./cypress/tests/**.*",
       // "./cypress/tests/Smoke/**.*"

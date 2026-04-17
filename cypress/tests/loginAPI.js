@@ -1,16 +1,41 @@
 /// <reference types='cypress' />
 
-describe(' this test for loginAPI ', () => {
-    it('this test must response 200 ', () => {
-        cy.request({
-            method: 'post',
-            url: '/api/auth/login',
-            body: {
-                username: 'admin1',
-                password: 'Admin@123'
-            }
-        }).then((res) => {
-            expect(res.status).to.eq(200);
+describe('Testing login authorize ', () => {
+    it('Login susseccfully, response 200 and role ADMIN', () => {
+        cy.fixture("users").then((user) => {
+            const userData = Object.keys(user.admins);
+            const randomAdmin = user.admins[userData[Math.floor(Math.random() * userData.length)]];
+            cy.request({
+                method: 'post',
+                url: '/api/auth/login',
+                body: {
+                    username: randomAdmin.username,
+                    password: randomAdmin.password
+                }
+            }).then((res) => {
+                expect(res.status).to.eq(200);
+                // cy.log(JSON.stringify(res.body.data.user.role));
+                expect(res.body.data.user.role).to.eq('ADMIN');
+            })
+        })
+    })
+
+    it('Login susseccfully, response 200 and role USER', () => {
+        cy.fixture("users").then((user) => {
+            const userData = Object.keys(user.users);
+            const randomUser = user.users[userData[Math.floor(Math.random() * userData.length)]];
+            cy.request({
+                method: 'post',
+                url: '/api/auth/login',
+                body: {
+                    username: randomUser.username,
+                    password: randomUser.password
+                }
+            }).then((res) => {
+                expect(res.status).to.eq(200);
+                expect(res.body.data.user.username).to.eq(randomUser.username);
+                expect(res.body.data.user.role).to.eq('USER');
+            })
         })
     })
 })
