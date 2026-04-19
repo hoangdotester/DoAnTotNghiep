@@ -24,27 +24,11 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('loginWithAdmin', () => {
-    cy.fixture("users").then((user) => {
-        const userData = Object.keys(user.admins);
-        const randomAdmin = user.admins[userData[Math.floor(Math.random() * userData.length)]];
-        cy.request({
-            method: 'post',
-            url: '/api/auth/login',
-            body: {
-                username: randomAdmin.username,
-                password: randomAdmin.password
-            }
-        }).then((res) => {
-            expect(res.status).to.eq(200);
-        })
-    })
-})
 
-Cypress.Commands.add('loginWithUser', () => {
+Cypress.Commands.add('login', (role) => {
     cy.fixture("users").then((user) => {
-        const userData = Object.keys(user.users);
-        const randomUser = user.users[userData[Math.floor(Math.random() * userData.length)]];
+        const userData = Object.keys(user[role]);
+        const randomUser = user[role][userData[Math.floor(Math.random() * userData.length)]];
         cy.request({
             method: 'post',
             url: '/api/auth/login',
@@ -54,6 +38,83 @@ Cypress.Commands.add('loginWithUser', () => {
             }
         }).then((res) => {
             expect(res.status).to.eq(200);
+            Cypress.env('res', res);
         })
     })
 })
+
+
+Cypress.Commands.add('checkAccountWithToken', (token, result) => {
+    cy.request({
+        method: 'post',
+        url: '/api/auth/introspect',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        body: {
+
+            "token": token,
+
+        },
+        failOnStatusCode: false,
+
+    }).then((res) => {
+        // expect(res.status).to.eq(200);
+        expect(res.body.data.valid).to.eq(result)
+    })
+})
+
+// Cypress.Commands.add('sendOTP', () => {
+//     cy.fixture("users").then((user) => {
+//         const userData = Object.keys(user.USER);
+//         const randomUser = user.USER[userData[Math.floor(Math.random() * userData.length)]];
+//         cy.request({
+//             method: 'post',
+//             url: '/api/auth/forgot-password',
+//             qs: {
+//                 email: randomUser.email,
+//             },
+//         }).then((res) => {
+//             expect(res.status).to.eq(200);
+//             cy.log(randomUser.email)
+//         })
+//     })
+// })
+
+Cypress.Commands.add('sendOTP', (email) => {
+    cy.request({
+        method: 'post',
+        url: '/api/auth/forgot-password',
+        qs: {
+            email: email,
+        },
+    }).then((res) => {
+        expect(res.status).to.eq(200);
+    })
+})
+
+Cypress.Commands.add('getOTPFromMailtrap', (userEmail) => {
+    const accountId = '2691248';
+    const inboxId = '4558530';
+    const apiToken = 'c2b270e8b9d5db572cdbd57ae3d546c7';
+    return cy.request({
+        method: 'GET',
+        url: `https://mailtrap.io/api/accounts/${accountId}/inboxes/${inboxId}/messages`,
+        headers: { 'Api-Token': apiToken }
+    }).then((res) => {
+        const message = res.body.find(msg => msg.to_email === userEmail);
+
+        if (!message) {
+            throw new Error(`Không tìm thấy mail nào gửi đến ${userEmail}`);
+        }
+        return cy.request({
+            method: 'GET',
+            url: `https://mailtrap.io/api/accounts/${accountId}/inboxes/${inboxId}/messages/${message.id}/body.html`,
+            headers: { 'Api-Token': apiToken }
+        });
+    }).then((res) => {
+        const fullBody = res.body;
+        const otpCode = fullBody.match(/\d{6}/)[0];
+        return otpCode;
+    });
+});

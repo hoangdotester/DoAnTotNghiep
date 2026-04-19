@@ -1,7 +1,7 @@
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
-  allowCypressEnv: false,
+  allowCypressEnv: true,
 
   e2e: {
     // baseUrl: 'http://localhost:3000',
@@ -11,11 +11,12 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    // env: {
-    // apiUrl: 'http://localhost:8080/api', // URL của Backend Java
-    //   username_admin: 'admin',
-    //   password_admin: 'Admin@123'
-    // },
+    env: {
+      // apiUrl: 'http://localhost:8080/api', // URL của Backend Java
+      //   username_admin: 'admin',
+      //   password_admin: 'Admin@123',
+      // allowCypressEnv : true
+    },
     specPattern: [
       "./cypress/tests/**.*",
       // "./cypress/tests/Smoke/**.*"
