@@ -1,0 +1,27 @@
+[
+    {
+        "code": "SALE10",
+        "imageUrl": "string",
+        "discountPercentage": 10
+    },
+    {
+        "code": "SALE20",
+        "imageUrl": "string",
+        "discountPercentage": 20
+    },
+    {
+        "code": "SALE30",
+        "imageUrl": "string",
+        "discountPercentage": 30
+    },
+    {
+        "code": "SALE40",
+        "imageUrl": "string",
+        "discountPercentage": 40
+    },
+    {
+        "code": "SALE50",
+        "imageUrl": "string",
+        "discountPercentage": 50
+    }
+]

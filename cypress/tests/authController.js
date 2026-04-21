@@ -147,9 +147,10 @@ describe('Testing auth-controller ', () => {
         })
     })
 
-    it.only('Verify that the reset password API is working well', () => {
+    it('Verify that the reset password API is working well', () => {
         cy.fixture('users').then((user) => {
             const data = Object.keys(user.ADMIN)[0];
+            cy.wait(5000)
             cy.sendOTP(user.ADMIN[data].email);
             cy.getOTPFromMailtrap(user.ADMIN[data].email).then((otp) => {
                 cy.request({
