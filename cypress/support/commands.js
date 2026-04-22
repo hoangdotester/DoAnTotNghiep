@@ -94,9 +94,9 @@ Cypress.Commands.add('sendOTP', (email) => {
 })
 
 Cypress.Commands.add('getOTPFromMailtrap', (userEmail) => {
-    const accountId = '2691248';
-    const inboxId = '4558530';
-    const apiToken = 'c2b270e8b9d5db572cdbd57ae3d546c7';
+    const accountId = '2691891';
+    const inboxId = '4559397';
+    const apiToken = 'd1659c800388cc95e50088d66dae8f87';
     return cy.request({
         method: 'GET',
         url: `https://mailtrap.io/api/accounts/${accountId}/inboxes/${inboxId}/messages`,

@@ -1,27 +1,32 @@
 [
     {
         "code": "SALE10",
-        "imageUrl": "string",
+        "imageUrl": "https://res.cloudinary.com/dyntipd6t/image/upload/v1776868489/HinhMau/TestImage/download_ceujmx.png",
         "discountPercentage": 10
     },
     {
         "code": "SALE20",
-        "imageUrl": "string",
+        "imageUrl": "https://res.cloudinary.com/dyntipd6t/image/upload/v1776868489/HinhMau/TestImage/download_ceujmx.png",
         "discountPercentage": 20
     },
     {
         "code": "SALE30",
-        "imageUrl": "string",
+        "imageUrl": "https://res.cloudinary.com/dyntipd6t/image/upload/v1776868489/HinhMau/TestImage/download_ceujmx.png",
         "discountPercentage": 30
     },
     {
         "code": "SALE40",
-        "imageUrl": "string",
+        "imageUrl": "https://res.cloudinary.com/dyntipd6t/image/upload/v1776868489/HinhMau/TestImage/download_ceujmx.png",
         "discountPercentage": 40
     },
     {
         "code": "SALE50",
-        "imageUrl": "string",
+        "imageUrl": "https://res.cloudinary.com/dyntipd6t/image/upload/v1776868489/HinhMau/TestImage/download_ceujmx.png",
         "discountPercentage": 50
+    },
+    {
+        "code": "SALE60",
+        "imageUrl": "https://res.cloudinary.com/dyntipd6t/image/upload/v1776868489/HinhMau/TestImage/download_ceujmx.png",
+        "discountPercentage": 60
     }
 ]
