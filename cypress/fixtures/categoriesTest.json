@@ -1,0 +1,20 @@
+[
+    {
+        "categoryCode": "cateTest01",
+        "name": "Category test 01",
+        "description": "This category is for test",
+        "imageUrl": "https://res.cloudinary.com/dyntipd6t/image/upload/v1776868489/HinhMau/TestImage/download_ceujmx.png"
+    },
+    {
+        "categoryCode": "cateTest02",
+        "name": "Category test 02",
+        "description": "This category is for test",
+        "imageUrl": "https://res.cloudinary.com/dyntipd6t/image/upload/v1776868489/HinhMau/TestImage/download_ceujmx.png"
+    },
+    {
+        "categoryCode": "cateTest03",
+        "name": "Category test 03",
+        "description": "This category is for test",
+        "imageUrl": "https://res.cloudinary.com/dyntipd6t/image/upload/v1776868489/HinhMau/TestImage/download_ceujmx.png"
+    }
+]

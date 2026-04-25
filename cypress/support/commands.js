@@ -118,3 +118,25 @@ Cypress.Commands.add('getOTPFromMailtrap', (userEmail) => {
         return otpCode;
     });
 });
+
+Cypress.Commands.add('uploadImage', (fileName, folderName) => {
+    return cy.fixture(fileName, 'binary').then((imageBin) => {
+        cy.login('ADMIN').then((res) => {
+            const token = res.body.data.token;
+
+            const blob = Cypress.Blob.binaryStringToBlob(imageBin, 'image/png');
+
+            const formData = new FormData();
+            formData.append('file', blob, fileName);
+
+            return cy.request({
+                method: 'POST',
+                url: `/api/files/upload/image?folder=${folderName}`,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: formData,
+            });
+        });
+    });
+});
