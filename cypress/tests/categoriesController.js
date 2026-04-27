@@ -30,7 +30,6 @@ describe('Testing Categories Controller', () => {
                         categoryId.push(res.body.data.categoryId);
                     };
                 });
-
             });
         });
     });

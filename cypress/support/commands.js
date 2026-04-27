@@ -119,24 +119,32 @@ Cypress.Commands.add('getOTPFromMailtrap', (userEmail) => {
     });
 });
 
-Cypress.Commands.add('uploadImage', (fileName, folderName) => {
+Cypress.Commands.add('uploadImage', (fileName, folderName, token) => {
+    // 1. Đọc file dưới dạng 'binary'
     return cy.fixture(fileName, 'binary').then((imageBin) => {
-        cy.login('ADMIN').then((res) => {
-            const token = res.body.data.token;
+        // 2. Chuyển đổi sang Blob
+        const blob = Cypress.Blob.binaryStringToBlob(imageBin, 'image/png');
 
-            const blob = Cypress.Blob.binaryStringToBlob(imageBin, 'image/png');
+        // 3. Khởi tạo FormData
+        const formData = new FormData();
+        formData.append('file', blob, fileName);
 
-            const formData = new FormData();
-            formData.append('file', blob, fileName);
+        // 4. DÙNG XMLHttpRequest (Cypress request không support FormData tốt)
+        return new Cypress.Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', `${Cypress.config('baseUrl')}/api/files/upload/image?folder=${folderName}`);
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
-            return cy.request({
-                method: 'POST',
-                url: `/api/files/upload/image?folder=${folderName}`,
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: formData,
-            });
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    // Ép kiểu về JSON để Cypress dùng được
+                    resolve({ body: JSON.parse(xhr.response), status: xhr.status });
+                } else {
+                    reject(xhr.response);
+                }
+            };
+            xhr.onerror = () => reject(xhr.response);
+            xhr.send(formData);
         });
     });
 });
