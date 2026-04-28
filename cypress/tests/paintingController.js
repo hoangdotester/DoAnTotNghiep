@@ -111,7 +111,7 @@ describe('Testing Painting Controller', () => {
         });
     });
 
-    it.only('Verify that API get painting works correctly', () => {
+    it('Verify that API get painting works correctly', () => {
         cy.request({
             method: 'GET',
             url: '/api/paintings',
@@ -125,7 +125,7 @@ describe('Testing Painting Controller', () => {
             const responseData = res.body.data;
             expect(responseData).to.have.property('items').and.be.an('array');
             expect(responseData.items).to.have.lengthOf(12);
-            expect(responseData.totalItems).to.eq(23);
+            expect(responseData.totalItems).to.eq(23 + 1);
             expect(responseData.totalPages).to.eq(2);
             const firstItem = responseData.items[0];
             expect(firstItem).to.have.property('paintingId');

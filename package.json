@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/hoangdotester/DoAnTotNgiep#readme",
   "devDependencies": {
-    "cypress": "^15.13.1",
+    "cypress": "^15.14.0",
     "dotenv": "^17.4.2"
   },
   "dependencies": {

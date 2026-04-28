@@ -1,0 +1,94 @@
+name: TiemVe E2E Cross-Repo Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  e2e-testing:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: tiem_ve_db
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: 1. Checkout Cypress Code (Repo hiện tại)
+        uses: actions/checkout@v4
+
+      - name: 2. Checkout Backend Code (Repo A)
+        uses: actions/checkout@v4
+        with:
+          repository: [hoangdotester]/[Project-Climping-Rose] 
+          token: ${{ secrets.BE_REPO_TOKEN }}
+          path: backend-app
+
+      - name: 3. Setup Java 17 & Maven
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: 4. Build & Start Backend
+        env:
+          DB_URL: jdbc:postgresql://localhost:5432/tiem_ve_db
+          DB_USERNAME: root
+          DB_PASSWORD: password
+          USER_SERVICE_REDIS_HOST: localhost
+          USER_SERVICE_REDIS_PORT: 6379
+          USER_SERVICE_REDIS_PASSWORD: ""
+          USER_SERVICE_REDIS_SSL: false
+          USER_SERVICE_REDIS_TIMEOUT: 60s
+          
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          JWT_SIGNER_KEY: ${{ secrets.JWT_SIGNER_KEY }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          
+          GOOGLE_CLIENT_ID: "dummy-id"
+          FACEBOOK_CLIENT_ID: "dummy-id"
+          FACEBOOK_CLIENT_SECRET: "dummy-secret"
+          JWT_VALID_DURATION: 3600
+        run: |
+          cd backend-app
+          mvn clean install -DskipTests
+          mvn spring-boot:run & 
+
+      - name: 5. Wait for Backend Ready
+        # Đợi cho đến khi app trả về 200 OK. Đô có thể đổi endpoint thành /api/health nếu có
+        run: npx wait-on http://localhost:8080/api/paintings --timeout 90000
+
+      - name: 6. Run Cypress Tests
+        uses: cypress-io/github-action@v6
+        with:
+          install-command: npm install
+          config: baseUrl=http://localhost:8080
+
+      - name: 7. Upload Screenshots (Nếu fail)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      - name: 8. Upload Videos (Nếu fail)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos
+          path: cypress/videos
