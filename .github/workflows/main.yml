@@ -65,7 +65,6 @@ jobs:
           FACEBOOK_CLIENT_ID: "dummy-id"
           FACEBOOK_CLIENT_SECRET: "dummy-secret"
         run: |
-          # Di chuyển vào folder BE nơi chứa file pom.xml
           cd backend-app/BE
           mvn clean install -DskipTests
           mvn spring-boot:run & 
