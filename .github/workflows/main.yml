@@ -31,7 +31,7 @@ jobs:
       - name: 2. Checkout Backend Code (Repo A)
         uses: actions/checkout@v4
         with:
-          repository: hoangdotester/[Project-Climping-Rose
+          repository: hoangdotester/Project-Climping-Rose
           token: ${{ secrets.BE_REPO_TOKEN }}
           path: backend-app
 
@@ -65,7 +65,7 @@ jobs:
           FACEBOOK_CLIENT_SECRET: "dummy-secret"
           JWT_VALID_DURATION: 3600
         run: |
-          cd backend-app
+          cd backend-app/BE
           mvn clean install -DskipTests
           mvn spring-boot:run & 
 
