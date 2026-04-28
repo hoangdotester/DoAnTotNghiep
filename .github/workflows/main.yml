@@ -31,7 +31,7 @@ jobs:
       - name: 2. Checkout Backend Code (Repo A)
         uses: actions/checkout@v4
         with:
-          repository: [hoangdotester]/[Project-Climping-Rose] 
+          repository: hoangdotester/[Project-Climping-Rose
           token: ${{ secrets.BE_REPO_TOKEN }}
           path: backend-app
 
