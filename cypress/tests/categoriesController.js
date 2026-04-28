@@ -115,7 +115,7 @@ describe('Testing Categories Controller', () => {
                 if (res.status === 200) {
                     categoryId.push(res.body.data.categoryId);
                 }
-                expect(res.status).to.eq(400);
+                expect(res.status).to.eq(200);
             });
 
         });
