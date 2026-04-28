@@ -40,7 +40,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: 4. Build & Start Backend
+      - name: 4. Build, Start & Wait Backend
         env:
           DB_URL: jdbc:postgresql://localhost:5432/tiem_ve_db
           DB_USERNAME: root
@@ -62,26 +62,26 @@ jobs:
           FACEBOOK_CLIENT_SECRET: "dummy-secret"
         run: |
           cd backend-app/BE/tiem-ve-climping-rose-be
+          # 4a. Build dự án (Biên dịch 107 files)
           mvn clean install -DskipTests
-          # Chạy background và đẩy log ra file để nếu lỗi còn check được
-          mvn spring-boot:run > backend_log.txt 2>&1 & 
+          
+          # 4b. Chạy app và đợi nó lên ngay trong cùng 1 step để tránh bị GitHub giết tiến trình
+          mvn spring-boot:run & 
+          
+          echo "Waiting for Backend to wake up on port 8080..."
+          npx wait-on http://localhost:8080 --timeout 180000
 
-      - name: 5. Wait for Backend Ready
-
-        run: npx wait-on http://localhost:8080 --timeout 240000
-
-      - name: 6. Run Cypress Tests
+      - name: 5. Run Cypress Tests
         uses: cypress-io/github-action@v6
         with:
           install-command: npm install
           config: baseUrl=http://localhost:8080
 
-      - name: 7. Archive Logs & Artifacts
-        if: always() 
+      - name: 6. Archive Results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: execution-results
+          name: cypress-results
           path: |
-            backend-app/BE/tiem-ve-climping-rose-be/backend_log.txt
             cypress/screenshots
             cypress/videos
