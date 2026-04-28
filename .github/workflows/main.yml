@@ -62,14 +62,12 @@ jobs:
           FACEBOOK_CLIENT_SECRET: "dummy-secret"
         run: |
           cd backend-app/BE/tiem-ve-climping-rose-be
-          # 4a. Build dự án (Biên dịch 107 files)
           mvn clean install -DskipTests
           
-          # 4b. Chạy app và đợi nó lên ngay trong cùng 1 step để tránh bị GitHub giết tiến trình
           mvn spring-boot:run & 
           
           echo "Waiting for Backend to wake up on port 8080..."
-          npx wait-on http://localhost:8080 --timeout 180000
+          npx wait-on tcp:8080 --timeout 180000
 
       - name: 5. Run Cypress Tests
         uses: cypress-io/github-action@v6

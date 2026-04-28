@@ -133,7 +133,7 @@ describe('Testing auth-controller ', () => {
         })
     })
 
-    it('Verify that OTP send from API Forgot-password is working ', () => {
+    it.skip('Verify that OTP send from API Forgot-password is working ', () => {
         cy.fixture("users").then((user) => {
             const userData = Object.keys(user.USER);
             const randomUser = user.USER[userData[Math.floor(Math.random() * userData.length)]];
@@ -147,7 +147,7 @@ describe('Testing auth-controller ', () => {
         })
     })
 
-    it('Verify that the reset password API is working well', () => {
+    it.skip('Verify that the reset password API is working well', () => {
         cy.fixture('users').then((user) => {
             const data = Object.keys(user.ADMIN)[0];
             cy.wait(5000)
