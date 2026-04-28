@@ -1,10 +1,12 @@
 name: TiemVe E2E Cross-Repo Pipeline
 
 on:
+  repository_dispatch:
+    types: [run-smoke-test, run-full-regression]
   push:
     branches: [ "main", "master" ]
-  repository_dispatch:
-    types: [run-e2e-tests]
+  schedule:
+    - cron: '0 17 * * *'
 
 jobs:
   e2e-testing:
@@ -42,17 +44,13 @@ jobs:
 
       - name: 4. Build, Start & Wait Backend
         env:
-          # ... (Giữ nguyên các biến DB_URL, CLOUDINARY, JWT...)
           
-          # Cấu hình Redis để khớp với máy ảo GitHub
           USER_SERVICE_REDIS_HOST: 127.0.0.1
           USER_SERVICE_REDIS_PORT: 6379
           USER_SERVICE_REDIS_PASSWORD: ""
           USER_SERVICE_REDIS_TIMEOUT: 60s
           
-          # ĐÂY LÀ DÒNG QUAN TRỌNG NHẤT ĐỂ FIX LỖI 500
           SPRING_DATA_REDIS_SSL_ENABLED: "false" 
-          # Hoặc dùng đúng cấu trúc phân cấp nếu dòng trên không ăn:
           SPRING_REDIS_SSL_ENABLED: "false"
         run: |
           cd backend-app/BE/tiem-ve-climping-rose-be
@@ -68,6 +66,11 @@ jobs:
         with:
           install-command: npm install
           config: baseUrl=http://localhost:8080
+          spec: >-
+            ${{ 
+              github.event.action == 'run-smoke-test' && 'cypress/tests/smoke/*.js' || 
+              'cypress/tests/*.js' 
+            }}
 
       - name: 6. Archive Results
         if: always()
