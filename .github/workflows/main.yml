@@ -42,24 +42,18 @@ jobs:
 
       - name: 4. Build, Start & Wait Backend
         env:
-          DB_URL: jdbc:postgresql://localhost:5432/tiem_ve_db
-          DB_USERNAME: root
-          DB_PASSWORD: password
-          USER_SERVICE_REDIS_HOST: localhost
+          # ... (Giữ nguyên các biến DB_URL, CLOUDINARY, JWT...)
+          
+          # Cấu hình Redis để khớp với máy ảo GitHub
+          USER_SERVICE_REDIS_HOST: 127.0.0.1
           USER_SERVICE_REDIS_PORT: 6379
           USER_SERVICE_REDIS_PASSWORD: ""
           USER_SERVICE_REDIS_TIMEOUT: 60s
-          USER_SERVICE_REDIS_SSL: false
-          JWT_SIGNER_KEY: ${{ secrets.JWT_SIGNER_KEY }}
-          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
-          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-          JWT_VALID_DURATION: 3600
-          GOOGLE_CLIENT_ID: "dummy-id"
-          FACEBOOK_CLIENT_ID: "dummy-id"
-          FACEBOOK_CLIENT_SECRET: "dummy-secret"
+          
+          # ĐÂY LÀ DÒNG QUAN TRỌNG NHẤT ĐỂ FIX LỖI 500
+          SPRING_DATA_REDIS_SSL_ENABLED: "false" 
+          # Hoặc dùng đúng cấu trúc phân cấp nếu dòng trên không ăn:
+          SPRING_REDIS_SSL_ENABLED: "false"
         run: |
           cd backend-app/BE/tiem-ve-climping-rose-be
           mvn clean install -DskipTests
