@@ -60,8 +60,8 @@ jobs:
           
           echo "Waiting for Backend to wake up on port 8080..."
           npx wait-on tcp:8080 --timeout 180000
-          
-      - name: 🔍 Debug: List Spec Files
+
+      - name: 🔍 Debug List Spec Files
         run: |
           echo "Checking smoke directory:"
           ls -R cypress/tests/smoke/ || echo "Smoke directory NOT found!"
