@@ -68,8 +68,8 @@ jobs:
           config: baseUrl=http://localhost:8080
           spec: >-
             ${{ 
-              github.event.action == 'run-smoke-test' && 'cypress/tests/smoke/*.**' || 
-              'cypress/tests/*.**' 
+              github.event.action == 'run-smoke-test' && 'cypress/tests/smoke/**.*' || 
+              'cypress/tests/**.*' 
             }}
 
       - name: 6. Archive Results
