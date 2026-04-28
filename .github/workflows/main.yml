@@ -33,7 +33,7 @@ jobs:
         with:
           # Kiểm tra kỹ tên repo: hoangdotester/Project-Climping-Rose
           repository: hoangdotester/Project-Climping-Rose
-          token: ${{ secrets.BE_REPO_TOKEN }} 
+          # token: ${{ secrets.BE_REPO_TOKEN }} 
           path: backend-app
 
       # --- BƯỚC NÀY CỰC KỲ QUAN TRỌNG ĐÔ ĐANG THIẾU ---
