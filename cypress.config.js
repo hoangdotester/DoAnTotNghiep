@@ -19,7 +19,7 @@ module.exports = defineConfig({
     },
     specPattern: [
       "./cypress/tests/**.*",
-      // "./cypress/tests/Smoke/**.*"
+      "./cypress/tests/Smoke/**.*"
     ],
   },
 });
