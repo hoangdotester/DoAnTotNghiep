@@ -60,17 +60,20 @@ jobs:
           
           echo "Waiting for Backend to wake up on port 8080..."
           npx wait-on tcp:8080 --timeout 180000
+          
+      - name: 🔍 Debug: List Spec Files
+        run: |
+          echo "Checking smoke directory:"
+          ls -R cypress/tests/smoke/ || echo "Smoke directory NOT found!"
+          echo "Checking all tests directory:"
+          ls -R cypress/tests/
 
       - name: 5. Run Cypress Tests
         uses: cypress-io/github-action@v6
         with:
           install-command: npm install
           config: baseUrl=http://localhost:8080
-          spec: >-
-            ${{ 
-              github.event.action == 'run-smoke-test' && 'cypress/tests/smoke/**.*' || 
-              'cypress/tests/**.*' 
-            }}
+          spec: ${{ github.event.action == 'run-smoke-test' && 'cypress/tests/smoke/**/*.js' || 'cypress/tests/**/*.js' }}
 
       - name: 6. Archive Results
         if: always()
