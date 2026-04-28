@@ -58,7 +58,7 @@ jobs:
           ls -R backend-app 
           
           # Nếu file pom.xml nằm ngay trong BE thì lệnh này đúng:
-          cd backend-app/BE
+          cd backend-app/BE/tiem-ve-climping-rose-be
           mvn clean install -DskipTests
           mvn spring-boot:run & 
 
