@@ -61,13 +61,6 @@ jobs:
           echo "Waiting for Backend to wake up on port 8080..."
           npx wait-on tcp:8080 --timeout 180000
 
-      - name: 🔍 Debug List Spec Files
-        run: |
-          echo "Checking smoke directory:"
-          ls -R cypress/tests/smoke/ || echo "Smoke directory NOT found!"
-          echo "Checking all tests directory:"
-          ls -R cypress/tests/
-
       - name: 5. Run Cypress Tests
         uses: cypress-io/github-action@v6
         with:
@@ -83,3 +76,15 @@ jobs:
           path: |
             cypress/screenshots
             cypress/videos
+
+      - name: Report Status Back to Backend
+        if: always()
+        run: |
+          STATE="success"
+          if [ "${{ job.status }}" != "success" ]; then STATE="failure"; fi
+          
+          curl -L -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.BE_REPO_TOKEN }}" \
+          https://api.github.com/api/v3/repos/${{ github.event.client_payload.repo }}/statuses/${{ github.event.client_payload.sha }} \
+          -d "{\"state\":\"$STATE\",\"target_url\":\"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",\"description\":\"Cypress Smoke Tests\",\"context\":\"Cypress-Gatekeeper\"}"
