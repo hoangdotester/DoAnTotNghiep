@@ -14,6 +14,24 @@ describe('Smoke Test - Painting', () => {
         });
     });
 
+    after(() => {
+        cy.request({
+            method: 'DELETE',
+            url: `/api/paintings?paintingId=${paintingId}`,
+            headers: { 'Authorization': `Bearer ${token}` },
+            failOnStatusCode: false,
+        });
+        categoryIds.forEach(categoryId => {
+            cy.request({
+                method: 'DELETE',
+                url: `/api/categories/delete/${categoryId}`,
+                headers: { 'Authorization': `Bearer ${token}` },
+                failOnStatusCode: false,
+            });
+        });
+
+    });
+
     it('Verify that create painting works with uploaded image', () => {
         const fileName = '/testPicture/download.png';
         const folder = 'TEST';

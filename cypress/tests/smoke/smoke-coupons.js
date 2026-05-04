@@ -17,6 +17,22 @@ describe('Smoke Test - Coupons', () => {
             userToken = res.body.data.token;
         });
     })
+
+    after(() => {
+        if (createdId.length > 0) {
+            cy.request({
+                method: 'delete',
+                url: '/api/coupons/cleanup',
+                headers: {
+                    Authorization: `Bearer ${adminToken}`,
+                },
+                body: createdId
+            }).then((res) => {
+                expect(res.status).to.eq(200);
+            })
+        }
+    })
+
     it('Verify that API create coupons successfully with admin account!! ', () => {
         const coupon = coupons.slice(0, coupons.length / 2);
         coupon.forEach((coupon) => {

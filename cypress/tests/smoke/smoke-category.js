@@ -8,6 +8,21 @@ describe('Smoke Test - Category', () => {
         });
     });
 
+    after(() => {
+        categoryId.forEach(id => {
+            cy.request({
+                method: 'delete',
+                url: `/api/categories/delete/${id}`,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                failOnStatusCode: false,
+            }).then((response) => {
+                expect(response.status).to.eq(200);
+            });
+        });
+    });
+
     it('Verify that API create is working correctly', () => {
         cy.fixture('categoriesTest').then((data) => {
             data.forEach((category) => {
