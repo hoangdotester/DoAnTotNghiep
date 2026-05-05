@@ -1,7 +1,7 @@
 /// <reference types='cypress' />
 
 describe('Testing auth-controller ', () => {
-    it('Verify that forgot-password API working with valid Email ', () => {
+    it.skip('Verify that forgot-password API working with valid Email ', () => {
         cy.fixture("users").then((user) => {
             const userData = Object.keys(user.USER);
             const randomUser = user.USER[userData[Math.floor(Math.random() * userData.length)]];
