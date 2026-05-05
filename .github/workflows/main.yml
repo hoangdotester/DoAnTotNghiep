@@ -77,7 +77,7 @@ jobs:
             cypress/screenshots
             cypress/videos
 
-      - name: Report Status Back to Backend
+      - name: 7. Report Status Back to Backend
         if: always()
         run: |
           STATE="success"
@@ -88,3 +88,11 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.BE_REPO_TOKEN }}" \
           https://api.github.com/repos/${{ github.event.client_payload.repo }}/statuses/${{ github.event.client_payload.sha }} \
           -d "{\"state\":\"$STATE\",\"target_url\":\"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",\"description\":\"Cypress Smoke Tests\",\"context\":\"Cypress-Gatekeeper\"}"
+
+      - name: 8. Auto-merge PR if tests pass
+        if: success() && github.event.action == 'run-smoke-test'
+        env:
+          GH_TOKEN: ${{ secrets.BE_REPO_TOKEN }}
+        run: |
+          # Tìm PR tương ứng với mã SHA và thực hiện merge
+          gh pr merge ${{ github.event.client_payload.sha }} --auto --merge --repo hoangdotester/Project-Climping-Rose
