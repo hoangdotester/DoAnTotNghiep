@@ -9,7 +9,10 @@ module.exports = defineConfig({
     video: false,
     screenshotOnRunFailure: true,
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+    },
+    retries: {
+      runMode: 2,
+      openMode: 0,
     },
     env: {
       // apiUrl: 'http://localhost:8080/api', // URL của Backend Java
