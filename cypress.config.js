@@ -21,7 +21,7 @@ module.exports = defineConfig({
       // allowCypressEnv : true
     },
     specPattern: [
-      "./cypress/tests/**.*",
+      "./cypress/tests/regression/**.*",
       "./cypress/tests/smoke/**.*"
     ],
   },
