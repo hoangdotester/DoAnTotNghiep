@@ -91,7 +91,7 @@ jobs:
           -d "{\"state\":\"$STATE\",\"target_url\":\"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",\"description\":\"Cypress Smoke Tests\",\"context\":\"Cypress-Gatekeeper\"}"
 
       - name: 8. Auto-merge PR if tests pass
-        if: success()
+        if: success() && github.event_name == 'repository_dispatch'
         env:
           GH_TOKEN: ${{ secrets.BE_REPO_TOKEN }}
         run: |
