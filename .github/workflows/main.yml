@@ -5,8 +5,8 @@ on:
     types: [run-smoke-test, run-full-regression-test]
   push:
     branches: [ "main", "master" ]
-  schedule:
-    - cron: '0 17 * * *'
+  # schedule:
+  #   - cron: '0 17 * * *'
 
 jobs:
   e2e-testing:
