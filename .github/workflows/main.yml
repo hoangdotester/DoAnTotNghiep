@@ -6,15 +6,15 @@ on:
   push:
     branches: [ "main", "master" ]
   # schedule:
-  #   - cron: '0 17 * * *'
-
-permissions:
-  contents: read
-  issues: write  
+  #   - cron: '0 17 * * *'  
 
 jobs:
   e2e-testing:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      issues: write
 
     services:
       postgres:
