@@ -77,18 +77,14 @@ jobs:
       - name: 6. ZAP Baseline Scan
         id: zap_scan
         if : always() && github.event_name == 'repository_dispatch'
-        # Sử dụng Action chính thức từ OWASP ZAP
         uses: zaproxy/action-baseline@v0.14.0
         with:
-          # URL mà Backend đang chạy trong máy ảo GitHub
           target: 'http://localhost:8080'
-          # Cho phép pipeline tiếp tục ngay cả khi phát hiện lỗ hổng (để Đô xem Report trước)
           fail_action: false
-          # Tên file báo cáo sẽ xuất ra
+          token: ""
           artifact_name: 'zap-security-report'
 
       - name: 7. Upload ZAP Report
-        # Luôn chạy bước này để lấy báo cáo, kể cả khi các bước trước bị lỗi
         if: always() && github.event_name == 'repository_dispatch'
         uses: actions/upload-artifact@v4
         with:
@@ -130,7 +126,6 @@ jobs:
           fi
 
       - name: 12. Notify Discord (Chỉ báo cho nhánh MAIN)
-        # LỌC: Luôn chạy nhưng CHỈ khi hành động là run-full-regression (tức là từ Main)
         # if: always() && github.event.action == 'run-full-regression'
         if: always()
         uses: sarisia/actions-status-discord@v1
