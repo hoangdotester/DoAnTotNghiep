@@ -80,7 +80,7 @@ jobs:
             cypress/videos
 
       - name: 7. Report Status Back to Backend
-        if: always()
+        if: always() && github.event_name == 'repository_dispatch'
         run: |
           STATE="success"
           if [ "${{ job.status }}" != "success" ]; then STATE="failure"; fi
@@ -96,7 +96,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.BE_REPO_TOKEN }}
         run: |
-          # Tìm số PR dựa trên mã SHA rồi mới ra lệnh Merge
           PR_NUMBER=$(gh pr list --repo ${{ github.event.client_payload.repo }} --search "${{ github.event.client_payload.sha }}" --json number --jq '.[0].number')
           
           if [ -n "$PR_NUMBER" ]; then
