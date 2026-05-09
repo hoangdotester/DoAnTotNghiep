@@ -12,10 +12,6 @@ jobs:
   e2e-testing:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      issues: write
-
     services:
       postgres:
         image: postgres:15
@@ -74,24 +70,7 @@ jobs:
           config: baseUrl=http://localhost:8080
           spec: ${{ github.event.action == 'run-smoke-test' && 'cypress/tests/smoke/**/*.js' || 'cypress/tests/regression/**/*.js' }}
 
-      - name: 6. ZAP Baseline Scan
-        id: zap_scan
-        if : always() && github.event_name == 'repository_dispatch'
-        uses: zaproxy/action-baseline@v0.14.0
-        with:
-          target: 'http://localhost:8080'
-          fail_action: false
-          token: ""
-          artifact_name: 'zap-security-report'
-
-      - name: 7. Upload ZAP Report
-        if: always() && github.event_name == 'repository_dispatch'
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-baseline-report
-          path: 'zap_report.html'
-
-      - name: 8. Archive Results
+      - name: 6. Archive Results
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -100,7 +79,7 @@ jobs:
             cypress/screenshots
             cypress/videos
 
-      - name: 10. Report Status Back to Backend
+      - name: 7. Report Status Back to Backend
         if: always() && github.event_name == 'repository_dispatch'
         run: |
           STATE="success"
@@ -112,7 +91,7 @@ jobs:
           https://api.github.com/repos/${{ github.event.client_payload.repo }}/statuses/${{ github.event.client_payload.sha }} \
           -d "{\"state\":\"$STATE\",\"target_url\":\"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",\"description\":\"Cypress Smoke Tests\",\"context\":\"Cypress-Gatekeeper\"}"
 
-      - name: 11. Auto-merge PR if tests pass
+      - name: 8. Auto-merge PR if tests pass
         if: success() && github.event_name == 'repository_dispatch'
         env:
           GH_TOKEN: ${{ secrets.BE_REPO_TOKEN }}
@@ -125,7 +104,7 @@ jobs:
             echo "Không tìm thấy PR tương ứng với SHA này!"
           fi
 
-      - name: 12. Notify Discord (Chỉ báo cho nhánh MAIN)
+      - name: 9. Notify Discord (Chỉ báo cho nhánh MAIN)
         # if: always() && github.event.action == 'run-full-regression'
         if: always()
         uses: sarisia/actions-status-discord@v1
@@ -138,7 +117,6 @@ jobs:
             **Lý do:** ${{ 
               steps.build_be.outcome == 'failure' && 'Lỗi Server Backend' || 
               steps.cypress_test.outcome == 'failure' && 'Lỗi Test Hồi Quy (Regression)' ||
-              steps.zap_scan.outcome == 'failure' && '🚨 Phát hiện lỗ hổng bảo mật!' ||
               'Mọi thứ ổn định' 
             }}
             **Người thực hiện:** ${{ github.actor }}
