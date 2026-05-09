@@ -33,7 +33,7 @@ jobs:
         with:
           repository: hoangdotester/Project-Climping-Rose
           token: ${{ secrets.BE_REPO_TOKEN }} 
-          ref: ${{ github.event.client_payload.sha }}
+          ref: ${{ github.event.client_payload.sha || 'dev' }}
           path: backend-app
 
       - name: 3. Setup Java 17
