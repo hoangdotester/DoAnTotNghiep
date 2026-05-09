@@ -44,25 +44,30 @@ jobs:
           cache: maven
 
       - name: 4. Build, Start & Wait Backend
+        id: build_be 
         env:
-          
+          PORT: 8080
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          JWT_SIGNER_KEY: ${{ secrets.JWT_SIGNER_KEY }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
           USER_SERVICE_REDIS_HOST: 127.0.0.1
           USER_SERVICE_REDIS_PORT: 6379
           USER_SERVICE_REDIS_PASSWORD: ""
-          USER_SERVICE_REDIS_TIMEOUT: 60s
-          
-          SPRING_DATA_REDIS_SSL_ENABLED: "false" 
+          SPRING_DATA_REDIS_SSL_ENABLED: "false"
           SPRING_REDIS_SSL_ENABLED: "false"
         run: |
           cd backend-app/BE/tiem-ve-climping-rose-be
           mvn clean install -DskipTests
-          
           mvn spring-boot:run & 
-          
           echo "Waiting for Backend to wake up on port 8080..."
           npx wait-on tcp:8080 --timeout 180000
 
       - name: 5. Run Cypress Tests
+        id: cypress_test
         uses: cypress-io/github-action@v6
         with:
           install-command: npm install
@@ -104,7 +109,7 @@ jobs:
             echo "Không tìm thấy PR tương ứng với SHA này!"
           fi
 
-      - name: 8. Notify Discord (Chỉ báo cho nhánh MAIN)
+      - name: 9. Notify Discord (Chỉ báo cho nhánh MAIN)
         # LỌC: Luôn chạy nhưng CHỈ khi hành động là run-full-regression (tức là từ Main)
         if: always() && github.event.action == 'run-full-regression'
         uses: sarisia/actions-status-discord@v1
