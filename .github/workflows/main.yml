@@ -104,7 +104,16 @@ jobs:
             echo "Không tìm thấy PR tương ứng với SHA này!"
           fi
 
-      - name: 9. Notify Discord (Chỉ báo cho nhánh MAIN)
+      - name: 9. Trigger JMeter in Cypress Repo
+        if: success() && github.event_name == 'repository_dispatch'
+        run: |
+          curl -X POST \
+          -H "Authorization: token ${{ secrets.MY_GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/hoangdotester/DoAnTotNghiep/dispatches \
+          -d '{"event_type": "render_deploy_success"}'
+
+      - name: 10. Notify Discord (Chỉ báo cho nhánh MAIN)
         if: always() && github.event.action == 'run-full-regression'
         uses: sarisia/actions-status-discord@v1
         with:
