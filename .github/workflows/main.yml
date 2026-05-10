@@ -44,6 +44,7 @@ jobs:
           cache: maven
 
       - name: 4. Build, Start & Wait Backend
+        id: build_be
         env:
           
           USER_SERVICE_REDIS_HOST: 127.0.0.1
@@ -114,7 +115,7 @@ jobs:
           -d '{"event_type": "render_deploy_success"}'
 
       - name: 10. Notify Discord (Chỉ báo cho nhánh MAIN)
-        if: always() && github.event.action == 'run-full-regression'
+        if: always() && github.event.action == 'run-full-regression-test'
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}

@@ -15,13 +15,13 @@ jobs:
       - name: Wait for Render to be Awake
         run: |
           echo "Checking if Render is alive..."
-          timeout 120s bash -c 'until curl -s https://project-climping-rose.onrender.com/api/paintings; do echo "Waiting for Render..."; sleep 10; done'
+          timeout 300s bash -c 'until curl -s https://project-climping-rose.onrender.com/api/paintings; do echo "Waiting for Render..."; sleep 10; done'
 
       - name: Run JMeter Test
         id: jmeter
         uses: rbhadti94/apache-jmeter-action@v0.5.0
         with:
-          testFilePath: jmeter/TiemVe_GET_APIs.jmx # Đường dẫn tới file JMX của Đô
+          testFilePath: cypress/tests/jmeter/DoAn-Jmeter.jmx
           resultsDir: jmeter_reports/
 
       - name: Upload JMeter Results
