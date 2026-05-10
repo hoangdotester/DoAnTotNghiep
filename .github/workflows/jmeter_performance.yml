@@ -1,0 +1,47 @@
+name: JMeter Performance Test (Render Domain)
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [render_deploy_success]
+
+jobs:
+  performance-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Cypress Repo
+        uses: actions/checkout@v4
+
+      - name: Wait for Render to be Awake
+        run: |
+          echo "Checking if Render is alive..."
+          timeout 120s bash -c 'until curl -s https://project-climping-rose.onrender.com/api/paintings; do echo "Waiting for Render..."; sleep 10; done'
+
+      - name: Run JMeter Test
+        id: jmeter
+        uses: rbhadti94/apache-jmeter-action@v0.5.0
+        with:
+          testFilePath: jmeter/TiemVe_GET_APIs.jmx # Đường dẫn tới file JMX của Đô
+          resultsDir: jmeter_reports/
+
+      - name: Upload JMeter Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-reports
+          path: jmeter_reports/
+
+      - name: Discord Notification
+        if: always()
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: ${{ steps.jmeter.outcome == 'success' && 'info' || 'error' }}
+          username: "QA Bot - Tiệm Vẽ"
+          avatarUrl: "https://jmeter.apache.org/images/jmeter_logo.svg"
+          description: |
+            **JMeter Performance Test Result**
+            - **Status:** ${{ steps.jmeter.outcome == 'success' && 'PASSED' || 'FAILED' }}
+            - **Target:** https://project-climping-rose.onrender.com
+            - **Environment:** Production (Render)
+            - [Xem chi tiết báo cáo tại GitHub Actions](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK2 }}
