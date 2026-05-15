@@ -120,9 +120,9 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: ${{ job.status }}
-          title: "🚀 Báo cáo Production: Project-Climping-Rose"
+          title: "Báo cáo Production: Project-Climping-Rose"
           description: |
-            **Trạng thái:** ${{ job.status == 'success' && '✅ ĐÃ LÊN LIVE THÀNH CÔNG' || '❌ TRIỂN KHAI THẤT BẠI' }}
+            **Trạng thái:** ${{ job.status == 'success' && 'ĐÃ LÊN LIVE THÀNH CÔNG' || 'TRIỂN KHAI THẤT BẠI' }}
             **Lý do:** ${{ 
               steps.build_be.outcome == 'failure' && 'Lỗi Server Backend' || 
               steps.cypress_test.outcome == 'failure' && 'Lỗi Test Hồi Quy (Regression)' ||
